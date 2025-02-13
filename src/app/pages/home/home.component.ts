@@ -59,7 +59,7 @@ interface CategoryEvent {
     </div>
 
     <!-- Featured Events Slider -->
-    <div class="mt-20 mb-6 ">
+    <div class="mt-24 mb-6 ">
       <h2 class="text-2xl font-bold mb-4 text-primary px-4">À la une</h2>
       <div class="flex overflow-x-auto space-x-4 pb-4 px-4 scrollbar-hide">
         @for (event of filteredEvents; track event.id) {
@@ -89,43 +89,77 @@ interface CategoryEvent {
       </div>
     </div>
 
-    <!-- Events by Category -->
-    <div class="mb-20 px-4">
-      @for (category of categories; track category) {
-        @if (categoryEvents[category]) {
-          <div class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-              <h2 class="text-xl font-bold text-gray-900">{{category}}</h2>
-              <a [routerLink]="['/categories',$index+1]" 
-                 class="text-primary text-sm font-medium">
-                Voir tout
-              </a>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              @for (event of categoryEvents[category].slice(0, 4); track event.id) {
-                <a [routerLink]="['/event', event.id]" 
-                   class="rounded-lg overflow-hidden shadow-sm bg-white">
-                  <img [src]="event.image" 
-                       [alt]="event.title" 
-                       class="w-full aspect-[4/3] object-cover"
-                       (error)="handleImageError($event)"
-                       loading="lazy">
-                  <div class="p-3">
-                    <h3 class="font-medium text-sm line-clamp-2">{{event.title}}</h3>
-                    <p class="text-xs text-gray-500 mt-1">{{event.date}} • {{event.time}}</p>
-                    <p class="text-xs text-gray-500">{{event.location}}</p>
-                    <div class="mt-2 flex justify-between items-center">
-                      <p class="text-secondary font-bold text-sm">{{event.specialPrice}} XAF</p>
-                      <span class="text-xs text-gray-500 line-through">{{event.price}} XAF</span>
-                    </div>
-                  </div>
-                </a>
-              }
-            </div>
-          </div>
+    <!-- event category -->
+    <div class="mb-6 ">
+      <p class="text-lg font-bold mb-4 text-primary px-4">Par catégories</p>
+      <div class="w-full overflow-x-scroll scrollbar-hide flex items-center space-x-4 px-4">
+        <p (click)="categorieSelectId = 0" [ngClass]="{ 'bg-primary text-white': categorieSelectId === 0, 'text-primary': categorieSelectId !== 0 }" class="text-lg rounded-full border-primary border px-3 pb-1">Tous</p>
+        @for (category of categories; track category) {
+        <p (click)="categorieSelectId = category.id" [ngClass]="{ 'bg-primary text-white': categorieSelectId === category.id, 'text-primary': categorieSelectId !== category.id }" class="text-lg rounded-full border-primary border px-3 pb-1">{{category.name}}</p>
         }
-      }
+      </div>
+      <div class="w-full overflow-x-scroll scrollbar-hide flex items-center space-x-4 mt-3 px-4">
+        <div class="w-fit flex space-x-5">
+            @for (event of categoryEvents; track event.id) {
+              <a [routerLink]="['/event', event.id]" 
+                  class="rounded-lg overflow-hidden shadow-sm bg-white w-64">
+                <img [src]="event.image" 
+                      [alt]="event.title" 
+                      class="w-full aspect-[4/3] object-cover"
+                      (error)="handleImageError($event)"
+                      loading="lazy">
+                <div class="p-3">
+                  <h3 class="font-medium text-sm line-clamp-2">{{event.title}}</h3>
+                  <p class="text-xs text-gray-500 mt-1">{{event.date}} • {{event.time}}</p>
+                  <p class="text-xs text-gray-500">{{event.location}}</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <p class="text-secondary font-bold text-sm">{{event.specialPrice}} XAF</p>
+                    <span class="text-xs text-gray-500 line-through">{{event.price}} XAF</span>
+                  </div>
+                </div>
+              </a>
+            }@empty {
+              <p class="text-gray-500 text-sm text-center w-full">Aucun événement à afficher.</p>
+            }
+          </div>
+      </div>
     </div>
+
+    <!-- event location -->
+    <div class="mb-20 ">
+    <p class="text-lg font-bold mb-4 text-primary px-4">Par Villes</p>
+      <div class="w-full overflow-x-scroll scrollbar-hide flex items-center space-x-4 px-4">
+        <p (click)="locationearch = ''" [ngClass]="{ 'bg-primary text-white': locationearch === '', 'text-primary': locationearch !== '' }" class="text-lg rounded-full border-primary border px-3 pb-1">Tous</p>
+        @for (location of locations; track $index) {
+        <p (click)="locationearch = location" [ngClass]="{ 'bg-primary text-white': locationearch === location, 'text-primary': locationearch !== location }" class="text-lg rounded-full border-primary border px-3 pb-1">{{location}}</p>
+        }
+      </div>
+      <div class="w-full overflow-x-scroll scrollbar-hide flex items-center space-x-4 mt-3 px-4">
+        <div class="w-fit flex space-x-5">
+            @for (event of locationEvents; track event.id) {
+              <a [routerLink]="['/event', event.id]" 
+                  class="rounded-lg overflow-hidden shadow-sm bg-white w-64">
+                <img [src]="event.image" 
+                      [alt]="event.title" 
+                      class="w-full aspect-[4/3] object-cover"
+                      (error)="handleImageError($event)"
+                      loading="lazy">
+                <div class="p-3">
+                  <h3 class="font-medium text-sm line-clamp-2">{{event.title}}</h3>
+                  <p class="text-xs text-gray-500 mt-1">{{event.date}} • {{event.time}}</p>
+                  <p class="text-xs text-gray-500">{{event.location}}</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <p class="text-secondary font-bold text-sm">{{event.specialPrice}} XAF</p>
+                    <span class="text-xs text-gray-500 line-through">{{event.price}} XAF</span>
+                  </div>
+                </div>
+              </a>
+            }@empty {
+              <p class="text-gray-500 text-sm text-center w-full">Aucun événement à afficher.</p>
+            }
+          </div>
+      </div>
+    </div> 
 
     <!-- Footer -->
     <app-footer />
@@ -162,51 +196,40 @@ export class HomeComponent implements OnInit {
   private _categories:Category[] = [];
   private _user: User | null = null;
   showRegisterModal = false;
-
+  categorieSelectId = 0;
   initialPhoneNumber: string | null = null;
+  locationearch = "";
 
   /**
    * Retourne la liste des noms de catégories
    */
-  get categories(): string[] {
-    return this._categories.map(cat => cat.name);
+  get categories(){
+    return this._categories;
   }
 
-  /**
-   * Transforme les événements en y incluant les informations de catégorie
-   * @returns Un objet avec les événements groupés par catégorie
-   */
-  get categoryEvents(): { [key: string]: CategoryEvent[] } {
-    const eventsByCategory: { [key: string]: CategoryEvent[] } = {};
-    
-    // Initialiser les tableaux vides pour chaque catégorie
-    this._categories.forEach(cat => {
-      eventsByCategory[cat.name] = [];
-    });
 
-    // Grouper les événements par catégorie
-    this._events.forEach(event => {
-      const category = this._categories.find(cat => cat.id === event.categoryId);
-      if (category) {
-        const categoryEvent: CategoryEvent = {
-          id: event.id,
-          title: event.title,
-          date: event.date,
-          time: event.time,
-          location: event.location,
-          price: this._ticketTypes.find(t => t.eventId === event.id)?.price || 0,
-          specialPrice: this._ticketTypes.find(t => t.eventId === event.id)?.specialPrice || 0,
-          image: event.image,
-          category: category.name
-        };
-        eventsByCategory[category.name].push(categoryEvent);
-      }
-    });
+  getCategoryEvent(event:any){
+    return {
+      ...event,
+      price: this._ticketTypes.find(t => t.eventId === event.id)?.price || 0,
+      specialPrice: this._ticketTypes.find(t => t.eventId === event.id)?.specialPrice || 0,
+    };
+  }
 
-    // Ne retourner que les catégories qui ont des événements
-    return Object.fromEntries(
-      Object.entries(eventsByCategory).filter(([_, events]) => events.length > 0)
-    );
+  get categoryEvents(){
+    return this.Events.filter(event => event.categoryId === this.categorieSelectId || this.categorieSelectId == 0); 
+  }
+
+  get locations(){
+    return this._events.map(event => event.location).filter((location, index, self) => self.indexOf(location) === index);
+  }
+  
+  get locationEvents(){
+    return this.Events.filter(event => event.location == this.locationearch || this.locationearch == '');
+  }
+
+  get Events():any[]{
+    return this._events.map(event => this.getCategoryEvent(event)); 
   }
 
   // Image de remplacement par défaut
@@ -228,32 +251,17 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  /**
-   * Transforme un Event en FeaturedEvent
-   * @param event L'événement complet à transformer
-   * @returns Un événement au format FeaturedEvent
-   */
   get featuredEvents(): FeaturedEvent[] {
-    return this._events
-      .filter(event => event.isFeatured)
-      .map(event => ({
-        ...event,
-        ...(():{price:number , specialPrice:number}=>{
-          let t = this._ticketTypes.find(t => t.eventId == event.id);
-          console.log(t , this._ticketTypes)
-          if(t) return {price:t.price , specialPrice:t.specialPrice}
-          return {price:0 , specialPrice:0}
-        })()
-      }));
+    return this._events.map(event => this.getCategoryEvent(event)).filter(event => event.specialPrice > 0).slice(0, 5); // Filtrer les événements spéciaux et limiter aux 5 premiers getCategoryEvent()
   }
 
   constructor(private apiService: ApiService, private route: ActivatedRoute){}
 
   private loadHomeData() {
     return forkJoin({
-      ticketTypes: this.apiService.read('tickettype'),
-      events: this.apiService.read('event'),
-      categories: this.apiService.read('category')
+      ticketTypes: this.apiService.read('TicketType'),
+      events: this.apiService.read('Event'),
+      categories: this.apiService.read('Category')
     });
   }
 
@@ -272,7 +280,7 @@ export class HomeComponent implements OnInit {
   }
 
   private handleUserByPhone(phone: string) {
-    return this.apiService.read('user', { phoneNumber: phone }).pipe(
+    return this.apiService.read('User', { phoneNumber: phone }).pipe(
       tap(users => {
         if (users && users.length > 0) {
           // Utilisateur trouvé, le sauvegarder dans le localStorage
@@ -281,7 +289,7 @@ export class HomeComponent implements OnInit {
         } else {
           // Utilisateur non trouvé, afficher la modal avec le numéro pré-rempli
           this.initialPhoneNumber = phone;
-          this.apiService.create('user', {fullName: '', phoneNumber: phone }).subscribe({
+          this.apiService.create('User', {fullName: '', phoneNumber: phone }).subscribe({
             next: (user: any) => {
               localStorage.setItem('user', JSON.stringify(user.data));
               this._user = user.data;
@@ -299,17 +307,25 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.pipe(
       switchMap(params => {
-        const phone = params['phone'];
+        let phone = params['phone'];
         const storedUser = this.getStoredUser();
+
+        if(phone && !phone.startsWith('237')) {
+          phone = '237'+phone;
+        }
+
+        if(phone && phone.length != 12){
+          this.showRegisterModal = true;
+          return this.loadHomeData();
+        }
+
+        if (phone) {
+          return this.handleUserByPhone(phone);
+        }
 
         // Si on a un utilisateur stocké, vérifier s'il correspond au numéro de téléphone
         if (storedUser && this.handleExistingUser(storedUser, phone)) {
           return this.loadHomeData();
-        }
-
-        // Si on a un numéro de téléphone mais pas d'utilisateur correspondant
-        if (phone) {
-          return this.handleUserByPhone(phone);
         }
 
         // Dans tous les autres cas, afficher la modal d'inscription

@@ -143,8 +143,8 @@ export class EventDetailsComponent implements OnInit {
         this.eventId = +params['id'];
         console.log('Event ID:', this.eventId);
         return forkJoin({
-          event: this.apiService.getById('event', this.eventId),
-          ticketTypes: this.apiService.read('ticketType', { eventId: this.eventId })
+          event: this.apiService.getById('Event', this.eventId),
+          ticketTypes: this.apiService.read('TicketType', { eventId: this.eventId })
         });
       })
     ).subscribe({

@@ -151,9 +151,9 @@ export class MyTicketsComponent implements OnInit {
 
   loadData(user:any) { 
     forkJoin([
-      this.apiService.read('event'),
-      this.apiService.read('ticket', { userId: user.id }),
-      this.apiService.read('tickettype')
+      this.apiService.read('Event'),
+      this.apiService.read('Ticket', { userId: user.id }),
+      this.apiService.read('TicketType')
     ]).subscribe({
       next: ([events, tickets, ticketTypes]) => {
         this._events = events;

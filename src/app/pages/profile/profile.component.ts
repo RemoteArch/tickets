@@ -29,7 +29,7 @@ interface PurchaseHistory {
       <div class="bg-gradient-to-r pt-3 from-primary/90 to-primary pt-safe pb-24 relative overflow-hidden">
         <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
         <div class="px-4 relative z-10">
-          <h1 class="text-xl font-semibold text-white/90">Mon Profil</h1>
+          <h1 class="text-xl font-semibold text-white/90"></h1>
         </div>
       </div>
 
@@ -170,7 +170,7 @@ interface PurchaseHistory {
               </div>
             </a>
 
-            <a href="#" class="flex items-center p-3 sm:p-4 rounded-xl border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition-all duration-200 group">
+            <a class="hidden flex items-center p-3 sm:p-4 rounded-xl border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition-all duration-200 group">
               <div class="p-2 sm:p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -275,9 +275,9 @@ export class ProfileComponent implements OnInit {
 
   loadData() {
     forkJoin([
-      this.apiService.read('event'),
-      this.apiService.read('ticket'),
-      this.apiService.read('tickettype')
+      this.apiService.read('Event'),
+      this.apiService.read('Ticket'),
+      this.apiService.read('TicketType')
     ]).subscribe({
       next: ([events, tickets, ticketTypes]) => {
         this._events = events;

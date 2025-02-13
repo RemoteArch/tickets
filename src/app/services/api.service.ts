@@ -16,7 +16,7 @@ interface CacheItem {
 export class ApiService {
   private baseUrl = environment.apiUrl+"/api.php";
   private cache: { [key: string]: CacheItem } = {};
-  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes en millisecondes
+  private readonly CACHE_DURATION =  60 * 1000; // 1 minute en millisecondes
 
   constructor(private http: HttpClient) { }
 
@@ -90,11 +90,11 @@ export class ApiService {
 
     const cacheKey = this.generateCacheKey(table, params);
 
-    // // Vérifier si les données sont en cache et valides
-    // if (this.isCacheValid(cacheKey)) {
-    //   console.log(`Using cached data for ${cacheKey}`);
-    //   return of(this.cache[cacheKey].data);
-    // }
+    // Vérifier si les données sont en cache et valides
+    if (this.isCacheValid(cacheKey)) {
+      console.log(`Using cached data for ${cacheKey}`);
+      return of(this.cache[cacheKey].data);
+    }
 
     // Si pas en cache ou cache invalide, faire la requête
     return this.http.get(`${this.baseUrl}/${table}/`, { params }).pipe(

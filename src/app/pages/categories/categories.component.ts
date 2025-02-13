@@ -96,7 +96,7 @@ export class CategoriesComponent implements OnInit {
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    this.apiService.read('category').subscribe({
+    this.apiService.read('Category').subscribe({
       next: (data: Category[]) => {
         this._categories = data;
         console.log('Categories loaded:', this._categories);

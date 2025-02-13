@@ -38,13 +38,16 @@ import { User } from '../../shared/models';
             <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">
               Numéro de téléphone
             </label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              formControlName="phoneNumber"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              [class.border-red-500]="isFieldInvalid('phoneNumber')"
-            >
+            <div class="relative">
+              <p class="absolute text-gray-500 left-3 top-1/2 transform -translate-y-1/2">237</p>
+              <input
+                type="tel"
+                id="phoneNumber"
+                formControlName="phoneNumber"
+                class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                [class.border-red-500]="isFieldInvalid('phoneNumber')"
+              >
+            </div>
             <div *ngIf="isFieldInvalid('phoneNumber')">
               <p class="mt-1 text-sm text-red-500">Un numéro de téléphone valide est requis</p>
             </div>
@@ -102,11 +105,12 @@ export class UserRegisterComponent {
       this.isSubmitting = true;
       const userData: User = {
         ...this.registerForm.value,
+        phoneNumber: `237${this.registerForm.value.phoneNumber}`,
         role: 'user',
         isActive: true
       };
 
-      this.apiService.create('user', userData).subscribe({
+      this.apiService.create('User', userData).subscribe({
         next: (user: any) => {
           localStorage.setItem('user', JSON.stringify(user.data));
           this.userRegistered.emit(user.data);

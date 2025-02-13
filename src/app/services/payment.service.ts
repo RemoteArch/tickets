@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 
 export interface PaymentRequest {
   tel: string;
-  ticketId: number;
+  ticketTypeId: number;
   quantity: number;
   userId: number;
 }
@@ -51,10 +51,10 @@ export class PaymentService {
 
     /**
      * Vérifie le statut d'un paiement
-     * @param ticketId L'identifiant du ticket
+     * @param orderId L'identifiant de la commande
      * @returns Observable avec le statut du paiement
      */
-    checkPaymentStatus(ticketId: string): Observable<PaymentStatus> {
-        return this.http.get<PaymentStatus>(`${this.apiUrl}?ticketId=${ticketId}`);
+    checkPaymentStatus(orderId: string): Observable<PaymentStatus> {
+        return this.http.get<PaymentStatus>(`${this.apiUrl}?orderId=${orderId}`);
     }
 }

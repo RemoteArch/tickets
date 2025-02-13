@@ -120,9 +120,9 @@ export class CategoryDetailsComponent implements OnInit {
         this.categoryId = +params['id']; // Convertir en nombre
         console.log('Category ID:', this.categoryId);
         return forkJoin({
-          category: this.apiService.getById('category', this.categoryId),
-          events: this.apiService.read('event'),
-          ticketTypes: this.apiService.read('tickettype')
+          category: this.apiService.getById('Category', this.categoryId),
+          events: this.apiService.read('Event'),
+          ticketTypes: this.apiService.read('TicketType')
         });
       })
     ).subscribe({

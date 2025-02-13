@@ -86,7 +86,7 @@ interface TicketType {
         </div>
 
         <!-- Contact Info -->
-        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div class="bg-white hidden rounded-lg shadow-sm p-4 mb-6">
           <h3 class="font-medium text-gray-900">Informations de contact</h3>
           <div class="mt-3">
             <p class="text-gray-600">Numéro de téléphone</p>
@@ -167,10 +167,10 @@ export class PurchaseComponent implements OnInit {
       switchMap(params => {
         const ticketTypeId = +params['id'];
         console.log('TicketType ID:', ticketTypeId);
-        return this.apiService.getById('ticketType', ticketTypeId).pipe(
+        return this.apiService.getById('TicketType', ticketTypeId).pipe(
           switchMap((ticketType: TicketType) => {
             this._ticketType = ticketType;
-            return this.apiService.getById('event', ticketType.eventId);
+            return this.apiService.getById('Event', ticketType.eventId);
           })
         );
       })
@@ -200,18 +200,41 @@ export class PurchaseComponent implements OnInit {
     }
   }
 
+  purshaseCheck(orderId:string){
+    this.paymentService.checkPaymentStatus(orderId).subscribe({
+      next: (response:any) => {
+        if(!response.stop){
+          this.purshaseCheck(orderId);
+        }else{
+          if(response.status){
+            this.pushaseConfirm.show('success' , "le payment a été effectué avec succès!");
+          }else{
+            this.pushaseConfirm.show('error' , "le payment n'a pas pu être effectué!");
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Payment error:', error);
+        this.pushaseConfirm.show('error' , 'Payment error!');
+      }
+    })
+  }
+
   purchase() {
     // Logique pour acheter les billets
     this.pushaseConfirm.show('loading' , 'Processing payment...');
     this.paymentService.processPayment({
-      ticketId: this.ticketType.id,
+      ticketTypeId: this.ticketType.id,
       quantity: this.quantity,
       tel: this.user.phoneNumber,
       userId: this.user.id
     }).subscribe({
-      next: (response) => {
-        console.log('Payment successful:', response);
-        this.pushaseConfirm.show('success' , 'Payment initialisation successful!');
+      next: (response:any) => {
+        if(response.status){
+          this.purshaseCheck(response.orderId);
+        }else{
+          this.pushaseConfirm.show('error' , "le payment n'a pas pu être effectué!");
+        }
       },
       error: (error) => {
         console.error('Payment error:', error);
