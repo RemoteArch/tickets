@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
-import { Ticket, TicketType, Event } from '../../shared/models';
+import { Ticket, TicketType, Event, Order } from '../../shared/models';
 import { ApiService } from '../../services/api.service';
 import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 interface PurchaseHistoryItem {
   id: string;
@@ -24,19 +25,13 @@ interface PurchaseHistoryItem {
 @Component({
   selector: 'app-purchase-history',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, FormsModule, FooterComponent],
   template: `
     <div class="min-h-screen pb-16 bg-gradient-to-br from-gray-50 via-white to-gray-50">
       <!-- Header avec fond dégradé -->
       <div class="bg-gradient-to-r from-primary/90 to-primary pt-3 pb-16 relative overflow-hidden">
         <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
         <div class="px-4 relative z-10">
-          <button routerLink="/profile" class="flex items-center text-white/80 hover:text-white mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Retour au profil
-          </button>
           <h1 class="text-xl font-semibold text-white/90">Historique des achats</h1>
         </div>
       </div>
@@ -47,20 +42,22 @@ interface PurchaseHistoryItem {
         <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 mb-4 sm:mb-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center space-x-2">
-              <button class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors">
+
+              <button (click)="statusSearch = ''" [ngClass]="{'bg-primary text-white':statusSearch == '', 'bg-white text-gray-600':statusSearch != ''}" class="px-4 py-2 rounded-lg  text-sm font-medium transition-colors">
                 Tous
               </button>
-              <button class="px-4 py-2 rounded-lg bg-white text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors">
-                Validés
-              </button>
-              <button class="px-4 py-2 rounded-lg bg-white text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors">
-                En attente
-              </button>
+              @for(status of statusList; track $index){
+                <button (click)="statusSearch = status" [ngClass]="{'bg-primary text-white':statusSearch == status, 'bg-white text-gray-600':statusSearch != status}" class="px-4 py-2 rounded-lg text-sm font-mediumtransition-colors">
+                  {{status}}
+                </button>
+              }
+
             </div>
             <div class="relative">
               <input 
                 type="text" 
                 placeholder="Rechercher un événement..."
+                [(ngModel)]="eventSearch"
                 class="w-full sm:w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -71,7 +68,7 @@ interface PurchaseHistoryItem {
         </div>
       </div>
       
-      <div class="space-y-4">
+      <div class="space-y-4 px-4 pb-16">
         <div *ngFor="let purchase of purchaseHistory; trackBy: trackById" class="bg-white rounded-2xl shadow-lg">
           <div class="flex flex-col sm:flex-row items-start p-4 rounded-xl hover:bg-gray-50 transition-colors">
             <div class="w-full sm:w-24 h-32 sm:h-24 rounded-lg overflow-hidden mb-4 sm:mb-0">
@@ -81,11 +78,11 @@ interface PurchaseHistoryItem {
               <div class="flex flex-col sm:flex-row justify-between items-start">
                 <div>
                   <h3 class="font-medium text-gray-900">{{purchase.eventName}}</h3>
-                  <div class="mt-1 flex flex-col sm:flex-row sm:items-center text-sm text-gray-500 space-y-1 sm:space-y-0 sm:space-x-2">
+                  <div class="mt-1 flex flex-row items-center text-sm text-gray-500 space-x-2">
                     <span>{{purchase.eventDate}}</span>
-                    <span class="hidden sm:inline">•</span>
+                    <span class="inline">•</span>
                     <span>{{purchase.eventTime}}</span>
-                    <span class="hidden sm:inline">•</span>
+                    <span class="inline">•</span>
                     <span>{{purchase.location}}</span>
                   </div>
                   <p class="text-xs text-gray-500 mt-1">
@@ -101,7 +98,7 @@ interface PurchaseHistoryItem {
                   </span>
                 </div>
               </div>
-              <div class="mt-4 flex flex-wrap gap-2">
+              <div class="mt-4  flex-wrap gap-2 hidden">
                 <button class="inline-flex items-center px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -127,6 +124,7 @@ interface PurchaseHistoryItem {
         </div>
       </div>
     </div>
+    <app-footer>
   `,
   styles: [`
     .purchase-history {
@@ -138,6 +136,16 @@ export class PurchaseHistoryComponent implements OnInit {
   _events: Event[] = [];
   _tickets: Ticket[] = [];
   _ticketTypes: TicketType[] = [];
+  _orders: Order[] = []
+
+  user:any = {}
+
+  eventSearch=""
+  statusSearch=""
+  get statusList(): string[]{
+    // return this.purchaseHistory.map(purchase=> purchase.paymentStatus).flat()
+    return [...new Set(this._orders.map(purchase => purchase.paymentStatus))];
+  }
 
   constructor(private apiService: ApiService) {}
 
@@ -147,19 +155,18 @@ export class PurchaseHistoryComponent implements OnInit {
       return;
     }
     user = JSON.parse(user);
-    this.loadData(user);
+    this.loadData();
+    this.user = user
   }
 
-  loadData(user: any) {
-    forkJoin([
-      this.apiService.read('Event'),
-      this.apiService.read('Ticket', { userId: user.id }),
-      this.apiService.read('TicketType')
-    ]).subscribe({
-      next: ([events, tickets, ticketTypes]) => {
-        this._events = events;
-        this._tickets = tickets;
-        this._ticketTypes = ticketTypes;
+  loadData() {
+    this.apiService.readMultiple(['Event','Ticket','TicketType','Orders']).subscribe({
+      next: (data:any[]) => {
+        this._events = data[0];
+        this._tickets = data[1];
+        this._ticketTypes = data[2];
+        this._orders = data[3]
+        console.log(data)
       },
       error: (error) => {
         console.error('Error loading data:', error);
@@ -168,28 +175,31 @@ export class PurchaseHistoryComponent implements OnInit {
   }
 
   get purchaseHistory(): PurchaseHistoryItem[] {
-    return this._tickets
-      .sort((a, b) => new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime())
-      .map(ticket => {
-        const ticketType = this._ticketTypes.find(t => t.id === ticket.ticketTypeId);
+    return this._orders
+      .filter(order => order.userId == this.user.id)
+      .map(order => {
+        const ticketType = this._ticketTypes.find(t => t.id === order.ticketTypeId);
         const event = this._events.find(e => e.id === ticketType?.eventId);
         const { formattedDate, formattedTime } = this.formatEventDateTime(event?.date || '');
 
         return {
-          id: ticket.name,
+          id: order.orderNumber,
           eventName: event?.title || 'Événement inconnu',
           eventDate: formattedDate,
           eventTime: formattedTime,
           ticketType: ticketType?.name || 'Type inconnu',
           quantity: 1,
-          totalAmount: ticket.price,
-          paymentStatus: this.getPaymentStatusLabel(ticket.status),
-          paymentStatusClass: this.getPaymentStatusClass(ticket.status),
-          orderDate: this.formatDate(ticket.orderDate),
+          totalAmount: order.totalAmount,
+          paymentStatus: order.paymentStatus,
+          paymentStatusClass: this.getPaymentStatusClass(order.paymentStatus),
+          orderDate: this.formatDate(order.paymentDate ?? ''),
           image: event?.image || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3',
           location: event?.location || 'Lieu inconnu'
         };
-      });
+      })
+      .filter(purchase => purchase.eventName.toLowerCase().includes(this.eventSearch.toLowerCase()) || this.eventSearch == '' )
+      .filter(purchase => purchase.paymentStatus == this.statusSearch || this.statusSearch == '' )
+      ;
   }
 
   private getPaymentStatusLabel(status: string): string {

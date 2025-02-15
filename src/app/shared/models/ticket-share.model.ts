@@ -1,7 +1,8 @@
 export interface TicketShare {
     id: number;
     ticketId: number;
-    senderId: number;
+    senderPhone: string;
     receiverPhone: string;
+    receiverName: string;
     sharedAt: string;
 }

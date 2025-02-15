@@ -8,7 +8,6 @@ import { Event } from '../../shared/models/event.model';
 import { Category, TicketType, User } from '../../shared/models';
 import { forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { switchMap, catchError, tap } from 'rxjs/operators';
 import { UserRegisterComponent } from '../user-register/user-register.component';
 
@@ -78,7 +77,7 @@ interface CategoryEvent {
                   <p class="text-primary font-bold">{{event.specialPrice}} XAF</p>
                 </div>
                 <span class="bg-primary/20 text-primary px-2 py-1 rounded-full text-sm">
-                  Tickets Assaillés
+                  Tickets Sassayer
                 </span>
               </div>
             </div>

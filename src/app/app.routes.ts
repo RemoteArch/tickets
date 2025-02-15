@@ -8,6 +8,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { PurchaseHistoryComponent } from './pages/purchase-history/purchase-history.component';
 import { MyTicketsComponent } from './pages/my-tickets/my-tickets.component';
 import { UserRegisterComponent } from './pages/user-register/user-register.component';
+import { EventListComponent } from './pages/event-list/event-list.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'categories/:id',
     component: CategoryDetailsComponent
+  },
+  {
+    path: 'events',
+    component: EventListComponent
   },
   {
     path: 'event/:id',
