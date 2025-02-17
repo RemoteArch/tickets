@@ -124,6 +124,10 @@ interface CategoryEvent {
       </div>
     </div>
 
+    <div class="px-4 hidden">
+    <iframe class="w-full rounded-lg" src="https://www.youtube.com/embed/o1sN1lB76EA?si=AmdtkWfnidCX-yIg&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+
     <!-- event location -->
     <div class="mb-20 ">
     <p class="text-lg font-bold mb-4 text-primary px-4">Par Villes</p>
@@ -159,6 +163,8 @@ interface CategoryEvent {
           </div>
       </div>
     </div> 
+
+
 
     <!-- Footer -->
     <app-footer />
@@ -309,26 +315,26 @@ export class HomeComponent implements OnInit {
         let phone = params['phone'];
         const storedUser = this.getStoredUser();
 
-        if(phone && !phone.startsWith('237')) {
-          phone = '237'+phone;
-        }
+        // if(phone && !phone.startsWith('237')) {
+        //   phone = '237'+phone;
+        // }
 
-        if(phone && phone.length != 12){
-          this.showRegisterModal = true;
-          return this.loadHomeData();
-        }
+        // // if(phone && phone.length != 12){
+        // //   this.showRegisterModal = true;
+        // //   return this.loadHomeData();
+        // // }
 
-        if (phone) {
-          return this.handleUserByPhone(phone);
-        }
+        // if (phone) {
+        //   return this.handleUserByPhone(phone);
+        // }
 
-        // Si on a un utilisateur stocké, vérifier s'il correspond au numéro de téléphone
-        if (storedUser && this.handleExistingUser(storedUser, phone)) {
-          return this.loadHomeData();
-        }
+        // // Si on a un utilisateur stocké, vérifier s'il correspond au numéro de téléphone
+        // if (storedUser && this.handleExistingUser(storedUser, phone)) {
+        //   return this.loadHomeData();
+        // }
 
-        // Dans tous les autres cas, afficher la modal d'inscription
-        this.showRegisterModal = true;
+        // // Dans tous les autres cas, afficher la modal d'inscription
+        // this.showRegisterModal = true;
         return this.loadHomeData();
       })
     ).subscribe({
